@@ -15,4 +15,18 @@ describe('AccountController', () => {
   it('should be defined', () => {
     expect(controller).toBeDefined();
   });
+
+  describe('SignIn', () => {
+    it('should return dummy string', () => {
+      const result = controller.signIn();
+      expect(result).toContain('SignIn');
+    });
+  });
+
+  describe('SignIn', () => {
+    it('should return dummy string', () => {
+      const result = controller.signUp();
+      expect(result).toContain('SignUp');
+    });
+  });
 });
