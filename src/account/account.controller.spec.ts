@@ -9,7 +9,7 @@ describe('AccountController', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [AccountController],
-      providers: [AccountService]
+      providers: [AccountService],
     }).compile();
 
     controller = module.get<AccountController>(AccountController);
@@ -28,9 +28,27 @@ describe('AccountController', () => {
   });
 
   describe('signUp', () => {
-    it('should create a new account', () => {
-      const result = controller.signUp();
-      expect(result).toContain('SignUp');
+    it('should create a new account', async () => {
+      const expectedId = 'test-id';
+      const expectedUsername = 'test-username';
+      const expectedPassword = 'test-password';
+
+      jest.spyOn(service, 'createAccount').mockResolvedValueOnce({
+        id: expectedId,
+        username: expectedUsername,
+        password: expectedPassword,
+      });
+
+      const result = await controller.signUp(
+        expectedUsername,
+        expectedPassword,
+      );
+
+      expect(result).toEqual({
+        id: expectedId,
+        username: expectedUsername,
+        password: expectedPassword,
+      });
     });
   });
 });
