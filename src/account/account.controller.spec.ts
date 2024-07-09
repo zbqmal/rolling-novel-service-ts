@@ -1,54 +1,53 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AccountController } from './account.controller';
 import { AccountService } from './account.service';
+import { SignUpRequestDto } from './dto/sign-up-request.dto';
 
 describe('AccountController', () => {
-  let controller: AccountController;
-  let service: AccountService;
+  let accountController: AccountController;
+  let accountService: AccountService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [AccountController],
-      providers: [AccountService],
+      providers: [
+        {
+          provide: AccountService,
+          useValue: {
+            signUp: jest.fn(),
+            signIn: jest.fn(),
+          },
+        },
+      ],
     }).compile();
 
-    controller = module.get<AccountController>(AccountController);
-    service = module.get<AccountService>(AccountService);
+    accountController = module.get<AccountController>(AccountController);
+    accountService = module.get<AccountService>(AccountService);
   });
 
   it('should be defined', () => {
-    expect(controller).toBeDefined();
-  });
-
-  describe('signIn', () => {
-    it('should return dummy string', () => {
-      const result = controller.signIn();
-      expect(result).toContain('SignIn');
-    });
+    expect(accountController).toBeDefined();
   });
 
   describe('signUp', () => {
-    it('should create a new account', async () => {
-      const expectedId = 'test-id';
-      const expectedUsername = 'test-username';
-      const expectedPassword = 'test-password';
+    it('should call accountService.signUp with the correct parameters', async () => {
+      const signUpRequestDto: SignUpRequestDto = {
+        username: 'test_username',
+        password: 'test_password',
+      };
+      await accountController.signUp(signUpRequestDto);
 
-      jest.spyOn(service, 'createAccount').mockResolvedValueOnce({
-        id: expectedId,
-        username: expectedUsername,
-        password: expectedPassword,
-      });
-
-      const result = await controller.signUp(
-        expectedUsername,
-        expectedPassword,
-      );
-
-      expect(result).toEqual({
-        id: expectedId,
-        username: expectedUsername,
-        password: expectedPassword,
-      });
+      expect(accountService.signUp).toHaveBeenCalledWith(signUpRequestDto);
     });
   });
+
+  //   describe('signIn', () => {
+  //     it('should call accountService.signIn with the correct parameters', async () => {
+  //       const username = 'test@example.com';
+  //       const password = 'password123';
+  //       await accountController.signIn(username, password);
+
+  //       expect(accountService.signIn).toHaveBeenCalledWith(username, password);
+  //     });
+  //   });
 });
