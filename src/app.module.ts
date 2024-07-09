@@ -1,12 +1,13 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { MongooseModule } from '@nestjs/mongoose';
 import { AccountModule } from './account/account.module';
 import { ConfigModule } from '@nestjs/config';
 
 @Module({
-  imports: [ConfigModule.forRoot({ envFilePath: '.env.local' }), AccountModule],
-  controllers: [AppController],
-  providers: [AppService],
+  imports: [
+    ConfigModule.forRoot({ envFilePath: '.env.local' }),
+    MongooseModule.forRoot('mongodb://localhost/nestjs-jwt-mongodb'),
+    AccountModule,
+  ],
 })
 export class AppModule {}
