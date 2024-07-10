@@ -6,6 +6,8 @@ import { Model } from 'mongoose';
 import { JwtService } from '@nestjs/jwt';
 import { SignUpRequestDto } from './dto/sign-up-request.dto';
 import { SignUpResponseDto } from './dto/sign-up-response.dto';
+import { SignInRequestDto } from './dto/sign-in-request.dto';
+import { SignInResponseDto } from './dto/sign-in-response.dto';
 
 @Injectable()
 export class AccountService {
@@ -32,14 +34,21 @@ export class AccountService {
     }
   }
 
-  async signIn(username: string, password: string): Promise<any> {
-    const account = await this.accountModel.findOne({ username });
-    if (account && (await bcrypt.compare(password, account.password))) {
+  async signIn(request: SignInRequestDto): Promise<SignInResponseDto> {
+    const account = await this.accountModel.findOne({
+      username: request.username,
+    });
+    if (account && (await bcrypt.compare(request.password, account.password))) {
       return this.generateToken(account);
     }
     throw new Error('Invalid credentials');
   }
 
+  /**
+   * Generates JWT access token for an account
+   * @param account An account to be used for generating a JWT access token
+   * @returns JWT access token
+   */
   private generateToken(account: Account) {
     const payload = { username: account.username, sub: account._id };
     return {
