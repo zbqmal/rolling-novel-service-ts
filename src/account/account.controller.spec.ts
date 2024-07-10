@@ -2,6 +2,10 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AccountController } from './account.controller';
 import { AccountService } from './account.service';
 import { SignUpRequestDto } from './dto/sign-up-request.dto';
+import { SignInRequestDto } from './dto/sign-in-request.dto';
+
+const testUsername = 'test_username';
+const testPassword = 'test_password';
 
 describe('AccountController', () => {
   let accountController: AccountController;
@@ -32,8 +36,8 @@ describe('AccountController', () => {
   describe('signUp', () => {
     it('should call accountService.signUp with the correct parameters', async () => {
       const signUpRequestDto: SignUpRequestDto = {
-        username: 'test_username',
-        password: 'test_password',
+        username: testUsername,
+        password: testPassword,
       };
       await accountController.signUp(signUpRequestDto);
 
@@ -41,13 +45,15 @@ describe('AccountController', () => {
     });
   });
 
-  //   describe('signIn', () => {
-  //     it('should call accountService.signIn with the correct parameters', async () => {
-  //       const username = 'test@example.com';
-  //       const password = 'password123';
-  //       await accountController.signIn(username, password);
+  describe('signIn', () => {
+    it('should call accountService.signIn with the correct parameters', async () => {
+      const signInRequestDto: SignInRequestDto = {
+        username: testUsername,
+        password: testPassword,
+      };
+      await accountController.signIn(signInRequestDto);
 
-  //       expect(accountService.signIn).toHaveBeenCalledWith(username, password);
-  //     });
-  //   });
+      expect(accountService.signIn).toHaveBeenCalledWith(signInRequestDto);
+    });
+  });
 });
